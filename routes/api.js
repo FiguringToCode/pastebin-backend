@@ -2,7 +2,7 @@
 const express = require('express');
 const mongoose = require('mongoose')
 const router = express.Router();
-const Paste = require('../models/paste.model');
+const Paste = require('../model/paste.model');
 const { getCurrentTime, isExpired, getExpiresAt } = require('../utils/time');
 const { nanoid } = require('nanoid'); // npm install nanoid
 
