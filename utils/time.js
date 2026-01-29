@@ -12,7 +12,7 @@ function getCurrentTime(req) {
 
 function isExpired(paste, currentTime) {
     if(!paste.ttl_seconds) return false
-    const expiresAt = paste.createdAt = paste.createdAt + (paste.ttl_seconds * 1000)
+    const expiresAt = paste.createdAt + (paste.ttl_seconds * 1000)
     return currentTime >= expiresAt
 }
 

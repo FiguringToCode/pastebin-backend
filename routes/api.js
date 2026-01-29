@@ -1,7 +1,8 @@
 // server/routes/api.js
 const express = require('express');
+const mongoose = require('mongoose')
 const router = express.Router();
-const Paste = require('../models/Paste');
+const Paste = require('../models/paste.model');
 const { getCurrentTime, isExpired, getExpiresAt } = require('../utils/time');
 const { nanoid } = require('nanoid'); // npm install nanoid
 
@@ -35,8 +36,8 @@ router.post('/pastes', async (req, res) => {
     const paste = new Paste({
       _id: id,
       content,
-      ttlSeconds: ttl_seconds,
-      maxViews: max_views,
+      ttl_seconds: ttl_seconds,
+      max_views: max_views,
       createdAt: Date.now()
     });
 

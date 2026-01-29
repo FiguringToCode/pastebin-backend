@@ -11,7 +11,7 @@ const PasteSchema = new mongoose.Schema({
 
 PasteSchema.index({ createdAt: 1 }, {
     expireAfterSeconds: 0,
-    partialFilterExpression: { ttl_seconds: { $exist: true } }
+    partialFilterExpression: { ttl_seconds: { $exists: true } }
 })
 
 module.exports = mongoose.model('Paste', PasteSchema) 

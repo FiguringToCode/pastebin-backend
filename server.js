@@ -3,6 +3,7 @@ const cors = require('cors');
 const apiRoutes = require('./routes/api');
 const Paste = require('./model/paste.model')
 const { initializeDatabase } = require('./db/db.connect')
+const { getCurrentTime, getExpiresAt, isExpired } = require('./utils/time')
 
 const app = express();
 initializeDatabase()
