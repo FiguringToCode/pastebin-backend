@@ -34,8 +34,6 @@ app.get('/p/:id', async (req, res) => {
         return res.status(404).send('<h1>404 - View Limit Exceeded</h1>');
       }
   
-      // Don't increment view count for HTML view
-      // (only API fetches count as views based on requirements)
   
       // Escape HTML to prevent XSS
       const escapedContent = paste.content

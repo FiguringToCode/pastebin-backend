@@ -19,7 +19,7 @@ router.get('/healthz', async (req, res) => {
 // Create paste
 router.post('/pastes', async (req, res) => {
   try {
-    const { content, ttl_seconds, max_views } = req.body;
+    const { content, ttl_seconds, max_views, view_count } = req.body;
 
     // Validation
     if (!content || typeof content !== 'string' || content.trim() === '') {
@@ -35,9 +35,10 @@ router.post('/pastes', async (req, res) => {
     const id = nanoid(10);
     const paste = new Paste({
       _id: id,
-      content,
+      content: content,
       ttl_seconds: ttl_seconds,
       max_views: max_views,
+      view_count: view_count,
       createdAt: Date.now()
     });
 
@@ -46,7 +47,8 @@ router.post('/pastes', async (req, res) => {
     const url = `${process.env.BASE_URL || req.protocol + '://' + req.get('host')}/p/${id}`;
     res.status(201).json({ id, url });
   } catch (error) {
-    res.status(500).json({ error: 'Internal server error' });
+    console.log('Error creating paste: ', error)
+    res.status(500).json({ error: 'Internal server error', error: error });
   }
 });
 
