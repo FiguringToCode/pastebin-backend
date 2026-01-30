@@ -67,7 +67,7 @@ router.get('/pastes/:id', async (req, res) => {
     }
 
     // Check view limit BEFORE incrementing
-    if (paste.maxViews && paste.viewCount >= paste.maxViews) {
+    if (paste.max_views && paste.viewCount >= paste.max_views) {
       return res.status(404).json({ error: 'View limit exceeded' });
     }
 
@@ -80,7 +80,7 @@ router.get('/pastes/:id', async (req, res) => {
 
     const response = {
       content: updated.content,
-      remaining_views: updated.maxViews ? updated.maxViews - updated.viewCount : null,
+      remaining_views: updated.max_views ? updated.max_views - updated.view_count : null,
       expires_at: getExpiresAt(updated)
     };
 
