@@ -67,14 +67,14 @@ router.get('/pastes/:id', async (req, res) => {
     }
 
     // Check view limit BEFORE incrementing
-    if (paste.max_views && paste.viewCount >= paste.max_views) {
+    if (paste.max_views && paste.view_count >= paste.max_views) {
       return res.status(404).json({ error: 'View limit exceeded' });
     }
 
     // Increment view count atomically
     const updated = await Paste.findByIdAndUpdate(
       req.params.id,
-      { $inc: { viewCount: 1 } },
+      { $inc: { view_count: 1 } },
       { new: true }
     );
 
