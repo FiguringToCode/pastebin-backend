@@ -27,6 +27,14 @@ app.get('/p/:id', async (req, res) => {
 
     const paste = result.paste;
 
+    const response = {
+      content: paste.content,
+      remaining_views: paste.max_views ? paste.max_views - paste.view_count : null,
+      expires_at: getExpiresAt(paste)
+    };
+
+    res.json(response);
+
       // Escape HTML to prevent XSS
       const escapedContent = paste.content
         .replace(/&/g, '&amp;')
