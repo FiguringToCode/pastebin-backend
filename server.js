@@ -4,6 +4,7 @@ const apiRoutes = require('./routes/api');
 const Paste = require('./model/paste.model')
 const { initializeDatabase } = require('./db/db.connect')
 const { getCurrentTime, getExpiresAt, isExpired } = require('./utils/time')
+const { loadPasteAndIncrement } = require('./utils/loadAndPaste')
 
 const app = express();
 initializeDatabase()
@@ -18,30 +19,14 @@ app.use('/api', apiRoutes);
 // HTML view route (add the /p/:id route here) for serving paste HTML
 app.get('/p/:id', async (req, res) => {
     try {
-      const paste = await Paste.findById(req.params.id);
-      
-      if (!paste) {
-        return res.status(404).send('<h1>404 - Paste Not Found</h1>');
-      }
-  
-      const currentTime = getCurrentTime(req);
-  
-      if (isExpired(paste, currentTime)) {
-        return res.status(404).send('<h1>404 - Paste Expired</h1>');
-      }
-  
-      if (paste.max_views && paste.view_count >= paste.max_views) {
-        return res.status(404).send('<h1>404 - View Limit Exceeded</h1>');
-      }
-      
-      const response = {
-        content: updated.content,
-        remaining_views: updated.max_views ? updated.max_views - updated.view_count : null,
-        expires_at: getExpiresAt(updated)
-      };
+      const result = await loadPasteAndIncrement(req.params.id);
 
-      res.json(response);
-  
+      if(result.error){
+        const msg = result.error.msg
+        return res.status(result.error.status).send(`<h1>404 - ${msg}</h1>`)
+      }
+ 
+      const paste = result.paste
   
       // Escape HTML to prevent XSS
       const escapedContent = paste.content

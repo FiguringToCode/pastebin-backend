@@ -3,7 +3,8 @@ const express = require('express');
 const mongoose = require('mongoose')
 const router = express.Router();
 const Paste = require('../model/paste.model');
-const { getCurrentTime, isExpired, getExpiresAt } = require('../utils/time');
+const { getExpiresAt } = require('../utils/time');
+const { loadPasteReadOnly } = require('../utils/loadAndPaste')
 const { nanoid } = require('nanoid'); // npm install nanoid
 
 // Health check
@@ -55,15 +56,24 @@ router.post('/pastes', async (req, res) => {
 // Fetch paste (API)
 router.get('/pastes/:id', async (req, res) => {
   try {
-    const paste = await Paste.findById(req.params.id);
-    
-    if (!paste) {
-      return res.status(404).json({ error: 'Paste not found' });
+    const result = await loadPasteReadOnly(req);
+    if (result.error) {
+      return res.status(result.error.status).json({ error: result.error.msg });
     }
 
+    const paste = result.paste;
+
+    const response = {
+      content: paste.content,
+      remaining_views: paste.max_views ? paste.max_views - paste.view_count : null,
+      expires_at: getExpiresAt(paste)
+    };
+
+    res.json(response);
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 module.exports = router;
