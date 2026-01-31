@@ -61,45 +61,9 @@ router.get('/pastes/:id', async (req, res) => {
       return res.status(404).json({ error: 'Paste not found' });
     }
 
-    const currentTime = getCurrentTime(req);
-
-    // Check expiry
-    if (isExpired(paste, currentTime)) {
-      return res.status(404).json({ error: 'Paste expired' });
-    }
-
-    // Check view limit BEFORE incrementing
-    if (paste.max_views && paste.view_count >= paste.max_views) {
-      return res.status(404).json({ error: 'View limit exceeded' });
-    }
-
-    // Increment view count atomically
-    const updated = await Paste.findByIdAndUpdate(
-      req.params.id,
-      { $inc: { view_count: 1 } },
-      { new: true }
-    );
-
-    const response = {
-      content: updated.content,
-      remaining_views: updated.max_views ? updated.max_views - updated.view_count : null,
-      expires_at: getExpiresAt(updated)
-    };
-
-    res.json(response);
   } catch (error) {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
-router.get('/pastes', async (req, res) => {
-  try {
-    const pastes = await Paste.find()
-    res.status.json()
-
-  } catch (error) {
-    
-  }
-})
 
 module.exports = router;

@@ -33,6 +33,14 @@ app.get('/p/:id', async (req, res) => {
       if (paste.max_views && paste.view_count >= paste.max_views) {
         return res.status(404).send('<h1>404 - View Limit Exceeded</h1>');
       }
+      
+      const response = {
+        content: updated.content,
+        remaining_views: updated.max_views ? updated.max_views - updated.view_count : null,
+        expires_at: getExpiresAt(updated)
+      };
+
+      res.json(response);
   
   
       // Escape HTML to prevent XSS
