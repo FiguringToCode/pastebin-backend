@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const router = express.Router();
 const Paste = require('../model/paste.model');
 const { getExpiresAt } = require('../utils/time');
-const { loadPasteReadOnly } = require('../utils/loadAndPaste')
+const { loadPasteAndIncrement } = require('../utils/loadAndPaste')
 const { nanoid } = require('nanoid'); // npm install nanoid
 
 // Health check
@@ -56,7 +56,8 @@ router.post('/pastes', async (req, res) => {
 // Fetch paste (API)
 router.get('/pastes/:id', async (req, res) => {
   try {
-    const result = await loadPasteReadOnly(req);
+    const result = await loadPasteAndIncrement(req);
+   
     if (result.error) {
       return res.status(result.error.status).json({ error: result.error.msg });
     }

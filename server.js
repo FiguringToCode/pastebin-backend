@@ -18,16 +18,16 @@ app.use('/api', apiRoutes);
 
 // HTML view route (add the /p/:id route here) for serving paste HTML
 app.get('/p/:id', async (req, res) => {
-    try {
-      const result = await loadPasteAndIncrement(req.params.id);
+  try {
+    const result = await loadPasteAndIncrement(req);
+    
+    if (result.error) {
+      const msg = result.error.msg;
+      return res.status(result.error.status).send(`<h1>404 - ${msg}</h1>`);
+    }
 
-      if(result.error){
-        const msg = result.error.msg
-        return res.status(result.error.status).send(`<h1>404 - ${msg}</h1>`)
-      }
- 
-      const paste = result.paste
-  
+    const paste = result.paste;
+
       // Escape HTML to prevent XSS
       const escapedContent = paste.content
         .replace(/&/g, '&amp;')

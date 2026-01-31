@@ -1,23 +1,6 @@
 const { getCurrentTime, isExpired } = require('./time')
 const Paste = require('../model/paste.model')
 
-// Read-only: validate + fetch (no increment) - for /pastes/:id
-async function loadPasteReadOnly(req) {
-  const paste = await Paste.findById(req.params.id);
-  if (!paste) return { error: { status: 404, msg: 'Paste not found' } };
-
-  const currentTime = getCurrentTime(req);
-
-  if (isExpired(paste, currentTime)) {
-    return { error: { status: 404, msg: 'Paste expired' } };
-  }
-
-  if (paste.max_views && paste.view_count >= paste.max_views) {
-    return { error: { status: 404, msg: 'View limit exceeded' } };
-  }
-
-  return { paste };
-}
 
 // With increment: validate + fetch + increment - for /p/:id only
 async function loadPasteAndIncrement(req) {
@@ -46,4 +29,4 @@ async function loadPasteAndIncrement(req) {
 }
 
 
-module.exports = { loadPasteAndIncrement, loadPasteReadOnly }
+module.exports = { loadPasteAndIncrement }
