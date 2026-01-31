@@ -5,16 +5,6 @@ async function loadAndPasteLink(req) {
   const paste = await Paste.findById(req.params.id);
   if (!paste) return { error: { status: 404, msg: 'Paste not found' } };
 
-  const currentTime = getCurrentTime(req);
-
-  if (isExpired(paste, currentTime)) {
-    return { error: { status: 404, msg: 'Paste expired' } };
-  }
-
-  if (paste.max_views && paste.view_count >= paste.max_views) {
-    return { error: { status: 404, msg: 'View limit exceeded' } };
-  }
-
   return { paste };
 }
 
