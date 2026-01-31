@@ -61,8 +61,17 @@ router.get('/pastes/:id', async (req, res) => {
     if (result.error) {
       return res.status(result.error.status).json({ error: result.error.msg });
     }
+
+    const paste = result.paste;
+    res.json({
+      content: paste.content,
+      remaining_views: paste.max_views ? paste.max_views - paste.view_count : null,
+      expires_at: getExpiresAt(paste),
+      view_count: paste.view_count
+    });
     
   } catch (error) {
+    console.log('Error fetching paste: ', error)
     res.status(500).json({ error: 'Internal server error' });
   }
 });

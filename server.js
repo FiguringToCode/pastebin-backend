@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const apiRoutes = require('./routes/api');
 const Paste = require('./model/paste.model')
+const { getExpiresAt } = require('./utils/time')
 const { initializeDatabase } = require('./db/db.connect')
 const { loadPasteAndIncrement } = require('./utils/loadAndPaste')
 
@@ -22,18 +23,13 @@ app.get('/p/:id', async (req, res) => {
 
     if (result.error) {
       const msg = result.error.msg;
-      return res.status(result.error.status).send(`<h1>404 - ${msg}</h1>`);
+      return res.status(result.error.status).send(`<h1>${result.error.status} - ${msg}</h1>`);
     }
 
-    const paste = result.paste;
+    const paste = result.updatedPaste;
 
-    const response = {
-      content: paste.content,
-      remaining_views: paste.max_views ? paste.max_views - paste.view_count : null,
-      expires_at: getExpiresAt(paste)
-    };
-
-    res.json(response);
+    const remainingViews = paste.max_views ? paste.max_views - paste.view_count : 'Unlimited';
+    const expiresAt = getExpiresAt(paste);
 
       // Escape HTML to prevent XSS
       const escapedContent = paste.content
@@ -51,11 +47,16 @@ app.get('/p/:id', async (req, res) => {
             <style>
               body { font-family: monospace; padding: 20px; }
               pre { background: #f4f4f4; padding: 15px; border-radius: 5px; }
+              .info { color: #666; font-size: 0.9em; margin-top: 10px; }
             </style>
           </head>
           <body>
             <h1 style="margin-top: 1rem;">Paste</h1>
-            <pre style="text-align: center;">${escapedContent}</pre>
+            <pre>${escapedContent}</pre>
+            <div class="info">
+              <p>Remaining views: ${remainingViews}</p>
+              ${expiresAt ? `<p>Expires at: ${expiresAt}</p>` : ''}
+            </div>
           </body>
         </html>
       `);
