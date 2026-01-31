@@ -3,7 +3,6 @@ const cors = require('cors');
 const apiRoutes = require('./routes/api');
 const Paste = require('./model/paste.model')
 const { initializeDatabase } = require('./db/db.connect')
-const { getCurrentTime, getExpiresAt, isExpired } = require('./utils/time')
 const { loadPasteAndIncrement } = require('./utils/loadAndPaste')
 
 const app = express();
@@ -20,7 +19,7 @@ app.use('/api', apiRoutes);
 app.get('/p/:id', async (req, res) => {
   try {
     const result = await loadPasteAndIncrement(req);
-    
+
     if (result.error) {
       const msg = result.error.msg;
       return res.status(result.error.status).send(`<h1>404 - ${msg}</h1>`);
