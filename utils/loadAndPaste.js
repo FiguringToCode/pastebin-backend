@@ -41,7 +41,7 @@ async function loadPasteAndIncrement(req) {
     { new: true }
   );
 
-  return { paste: updated };
+  return { updatedPaste: updated, paste };
 }
 
 
