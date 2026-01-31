@@ -92,4 +92,14 @@ router.get('/pastes/:id', async (req, res) => {
   }
 });
 
+router.get('/pastes', async (req, res) => {
+  try {
+    const pastes = await Paste.find()
+    res.status.json()
+
+  } catch (error) {
+    
+  }
+})
+
 module.exports = router;

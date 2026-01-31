@@ -54,8 +54,8 @@ app.get('/p/:id', async (req, res) => {
             </style>
           </head>
           <body>
-            <h1>Paste</h1>
-            <pre>${escapedContent}</pre>
+            <h1 style="margin-top: 1rem;">Paste</h1>
+            <pre style="text-align: center;">${escapedContent}</pre>
           </body>
         </html>
       `);
